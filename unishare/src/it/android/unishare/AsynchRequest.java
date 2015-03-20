@@ -14,7 +14,7 @@ public class AsynchRequest extends AsyncTask<Void,ArrayList<Entity>,ArrayList<En
 	private SmartActivity activity;
 	private Fragment fragment;
 	private ProgressDialog dialog;
-	private float startedAt;
+	private float startedAt;;;
 	
 	public AsynchRequest setParameters(Activity activity, String url, String tag, Fragment fragment, ProgressDialog dialog) {
 		this.url = url;
