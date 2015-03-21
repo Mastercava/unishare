@@ -27,6 +27,8 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
 	private static final String ADAPTER_VALUES = "key_adapter";
 	private static final String SEARCH_FORM = "search_form_content";
 	
+	public static final String TAG = "BooksSearchFragment";
+	
 	private BooksActivity activity;
 	private View view;
 	
@@ -50,15 +52,23 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
     public BooksSearchFragment() {
     	
     }
+    
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // retain this fragment when activity is re-initialized
+        setRetainInstance(true);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	if(view == null){
-    		if(savedInstanceState != null){
+    		/*if(savedInstanceState != null){
         		listviewInstanceState = savedInstanceState.getParcelable(LIST_INSTANCE_STATE);
         		adapterValues = savedInstanceState.getParcelableArrayList(ADAPTER_VALUES);
         		searchFormContent = savedInstanceState.getString(SEARCH_FORM);
-        	}
+        	}*/
     		view = inflater.inflate(R.layout.books_search_fragment, container, false);
             initializeUI(view);
     	}

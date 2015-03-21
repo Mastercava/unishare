@@ -15,13 +15,20 @@ import android.view.MenuItem;
 public class BooksActivity extends SmartActivity implements OnBookSelectedListener {
 
 	private MyApplication application;
+	private BooksSearchFragment booksSearchFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         application = MyApplication.getInstance(this);
-        application.firstFragment(new BooksSearchFragment());
+        booksSearchFragment = (BooksSearchFragment)getFragmentManager().findFragmentByTag(BooksSearchFragment.TAG);
+        if(booksSearchFragment != null){
+        	System.out.println("Fragment esiste");
+        	application.firstFragment(booksSearchFragment);
+        }
+        else
+        	application.firstFragment(new BooksSearchFragment());
     }
 
     @Override
