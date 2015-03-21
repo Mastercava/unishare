@@ -25,6 +25,7 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
 	
 	private static final String LIST_INSTANCE_STATE = "key_listview";
 	private static final String ADAPTER_VALUES = "key_adapter";
+	private static final String SEARCH_FORM = "search_form_content";
 	
 	private BooksActivity activity;
 	private View view;
@@ -39,6 +40,7 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
 	
 	Parcelable listviewInstanceState;
 	ArrayList<Entity> adapterValues = new ArrayList<Entity>();
+	String searchFormContent = "";
 	
 	
 	public interface OnBookSelectedListener {
@@ -55,6 +57,7 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
     		if(savedInstanceState != null){
         		listviewInstanceState = savedInstanceState.getParcelable(LIST_INSTANCE_STATE);
         		adapterValues = savedInstanceState.getParcelableArrayList(ADAPTER_VALUES);
+        		searchFormContent = savedInstanceState.getString(SEARCH_FORM);
         	}
     		view = inflater.inflate(R.layout.books_search_fragment, container, false);
             initializeUI(view);
@@ -83,6 +86,7 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
     		values.add(adapter.getItem(i));
     	outState.putParcelable(LIST_INSTANCE_STATE, listview.onSaveInstanceState());
     	outState.putParcelableArrayList(ADAPTER_VALUES, values);
+    	outState.putString(SEARCH_FORM, searchForm.getText().toString());
     }
     
     @Override
@@ -103,6 +107,7 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
 	        }
         });
         if(listviewInstanceState != null){
+        	searchForm.setText(searchFormContent);
     		System.out.println(adapterValues.size());
     		adapter.addAll(adapterValues); 
     		System.out.println(Entity.entityArraylistToString(adapterValues));
