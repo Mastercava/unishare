@@ -6,8 +6,10 @@ import it.android.unishare.BooksSearchFragment.OnBookSelectedListener;
 import it.android.unishare.R;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,15 +22,22 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.books_activity);
         application = MyApplication.getInstance(this);
+        
         booksSearchFragment = (BooksSearchFragment)getFragmentManager().findFragmentByTag(BooksSearchFragment.TAG);
         if(booksSearchFragment != null){
         	System.out.println("Fragment esiste");
-        	application.firstFragment(booksSearchFragment);
+        	getFragmentManager().beginTransaction()
+        	.add(R.id.books_fragment_container, booksSearchFragment, BooksSearchFragment.TAG).commit();
         }
-        else
-        	application.firstFragment(new BooksSearchFragment());
+        else{
+        	BooksSearchFragment fragment = new BooksSearchFragment();
+        	System.out.println("Fragment non trovato. Creo nuovo");
+        	fragment.setRetainInstance(true);
+        	getFragmentManager().beginTransaction()
+        	.add(R.id.books_fragment_container, fragment, BooksSearchFragment.TAG).commit();
+        }       	
     }
 
     @Override
@@ -76,7 +85,10 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
 	@Override
 	public void onBookSelected(Entity book) {
 		BooksDetailsFragment booksDetailsFragment = new BooksDetailsFragment(book);
-		application.newFragment(booksDetailsFragment);
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.replace(R.id.books_fragment_container, booksDetailsFragment, BooksDetailsFragment.TAG);
+		transaction.addToBackStack(null);
+		transaction.commit();	
 	}
 
 }

@@ -21,7 +21,7 @@ public class MainActivity extends SmartActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         application = MyApplication.getInstance(this);
-        application.firstFragment(new MainFragment());
+        getFragmentManager().beginTransaction().add(R.id.container, new MainFragment(), MainFragment.TAG).commit();
         //Starts background service
         //Intent service = new Intent(this.getApplicationContext(), BackgroundService.class);
         //this.getApplicationContext().startService(service);

@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 public class BooksDetailsFragment extends Fragment implements ViewInitiator {
 	
+	public static final String TAG = "it.android.unishare.BooksDetailsFragment";
+	
 	private Entity book;
 	private View view;
 	

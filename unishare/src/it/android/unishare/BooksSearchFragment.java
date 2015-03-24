@@ -23,11 +23,13 @@ import android.widget.ListView;
 
 public class BooksSearchFragment extends Fragment implements ViewInitiator {
 	
+	/*
 	private static final String LIST_INSTANCE_STATE = "key_listview";
 	private static final String ADAPTER_VALUES = "key_adapter";
 	private static final String SEARCH_FORM = "search_form_content";
+	*/
 	
-	public static final String TAG = "BooksSearchFragment";
+	public static final String TAG = "it.android.unishare.BooksSearchFragment";
 	
 	private BooksActivity activity;
 	private View view;
@@ -40,9 +42,11 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
 	ProgressDialog dialog;
 	BooksAdapter adapter;
 	
+	/*
 	Parcelable listviewInstanceState;
 	ArrayList<Entity> adapterValues = new ArrayList<Entity>();
 	String searchFormContent = "";
+	*/
 	
 	
 	public interface OnBookSelectedListener {
@@ -88,6 +92,7 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
         }
     }
     
+    /*
     @Override
     public void onSaveInstanceState(Bundle outState){
     	super.onSaveInstanceState(outState);
@@ -98,6 +103,7 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
     	outState.putParcelableArrayList(ADAPTER_VALUES, values);
     	outState.putString(SEARCH_FORM, searchForm.getText().toString());
     }
+    */
     
     @Override
 	public void initializeUI(View view) {
@@ -116,6 +122,7 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
 	        	activity.initializeFragmentUI(searchForm.getText().toString(), BooksSearchFragment.this, dialog);
 	        }
         });
+        /*
         if(listviewInstanceState != null){
         	searchForm.setText(searchFormContent);
     		System.out.println(adapterValues.size());
@@ -124,7 +131,7 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
     		listview.setAdapter(adapter);
     		//listview.onRestoreInstanceState(listviewInstanceState);
     	}
-    		
+    	*/	
 	}
 
 	public void displayResults(ArrayList<Entity> result, String tag) {

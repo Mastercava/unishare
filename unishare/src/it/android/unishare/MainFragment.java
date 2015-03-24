@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 public class MainFragment extends Fragment implements ViewInitiator {
 	
+	public final static String TAG = "it.android.unishare.MainFragment";
+	
 	private Activity activity;
 	private View view;
 	

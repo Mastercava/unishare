@@ -150,6 +150,7 @@ public class MyApplication extends android.app.Application {
 		currentContext.startActivity(intent);		
 	}
 	
+	/*
 	//Insert the first fragment of an activity
 	public void firstFragment(Fragment firstFragment){
 		FragmentTransaction transaction = currentActivity.getFragmentManager().beginTransaction();
@@ -165,6 +166,7 @@ public class MyApplication extends android.app.Application {
     	transaction.addToBackStack(null);
     	transaction.commit();
 	}
+	*/
 	
 	//Create request to database
 	public void databaseCall(String url, String tag, Fragment fragment, ProgressDialog dialog) {

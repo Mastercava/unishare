@@ -12,9 +12,9 @@ public class SplashActivity extends SmartActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.splash_activity);
 		application = MyApplication.getInstance(this);
-		application.firstFragment(new SplashFragment());
+		getFragmentManager().beginTransaction().add(R.id.splash_fragment_container, new SplashFragment()).commit();
 		application.newDelayedActivity(TIME_SHOW_MILLIS, MainActivity.class);
 	}
 	
