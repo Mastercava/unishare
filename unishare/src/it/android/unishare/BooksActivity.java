@@ -9,7 +9,6 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -28,13 +27,12 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
         booksSearchFragment = (BooksSearchFragment)getFragmentManager().findFragmentByTag(BooksSearchFragment.TAG);
         if(booksSearchFragment != null){
         	System.out.println("Fragment esiste");
-        	getFragmentManager().beginTransaction()
-        	.add(R.id.books_fragment_container, booksSearchFragment, BooksSearchFragment.TAG).commit();
+        	FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        	transaction.add(R.id.books_fragment_container, booksSearchFragment, BooksSearchFragment.TAG);
         }
         else{
         	BooksSearchFragment fragment = new BooksSearchFragment();
         	System.out.println("Fragment non trovato. Creo nuovo");
-        	fragment.setRetainInstance(true);
         	getFragmentManager().beginTransaction()
         	.add(R.id.books_fragment_container, fragment, BooksSearchFragment.TAG).commit();
         }       	

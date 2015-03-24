@@ -12,8 +12,14 @@ public class BooksDetailsFragment extends Fragment implements ViewInitiator {
 	
 	public static final String TAG = "it.android.unishare.BooksDetailsFragment";
 	
+	private static final String BOOK_ENTITY = "book_entity_key";
+	
 	private Entity book;
 	private View view;
+	
+	public BooksDetailsFragment(){
+		
+	}
 	
 	public BooksDetailsFragment (Entity book){
 		this.book = book;
@@ -21,6 +27,8 @@ public class BooksDetailsFragment extends Fragment implements ViewInitiator {
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		if(savedInstanceState != null)
+			book = savedInstanceState.getParcelable(BOOK_ENTITY);
         view = inflater.inflate(R.layout.books_details_fragment, container, false);
         initializeUI(view);
         return view;
@@ -30,6 +38,13 @@ public class BooksDetailsFragment extends Fragment implements ViewInitiator {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
     }
+	
+	@Override
+    public void onSaveInstanceState(Bundle outState){
+    	super.onSaveInstanceState(outState);
+    	outState.putParcelable(BOOK_ENTITY, book);
+    }
+    
 
 	@Override
 	public void initializeUI(View view) {
