@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class BooksDetailsFragment extends Fragment implements ViewInitiator {
@@ -51,6 +52,9 @@ public class BooksDetailsFragment extends Fragment implements ViewInitiator {
 		TextView text1 = (TextView) view.findViewById(R.id.textView1);
 		TextView text2 = (TextView) view.findViewById(R.id.textView2);
 		TextView text3 = (TextView) view.findViewById(R.id.textView3);
+		TextView text4 = (TextView) view.findViewById(R.id.textView4);
+		Button button = (Button) view.findViewById(R.id.button1);
+		
 		text1.setText("Titolo: " + book.get("titolo"));
 		text2.setText("Autore: " + book.get("autore"));
 		text3.setText("Prezzo: " + book.get("prezzo") + " euro");	

@@ -78,10 +78,10 @@ public class MainActivity extends SmartActivity {
     }
     
     @Override
-    public void handleResult(ArrayList<Entity> result, String tag, Fragment fragment){
+    public void handleResult(ArrayList<Entity> result, String tag){
     	if(tag == "userName"){
-    		MainFragment mainFragment = (MainFragment) fragment;
-    		mainFragment.displayResults(result,tag);
+    		//MainFragment mainFragment = (MainFragment) fragment;
+    		//mainFragment.displayResults(result,tag);
     	}
     		
     }

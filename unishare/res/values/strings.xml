@@ -10,5 +10,7 @@
     <string name="search_book_hint">Nome del libro, ISBN o autore</string>
     <string name="search_button">Cerca</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="interesting_book">Premi per ricevere maggiori informazioni sul venditore</string>
+    <string name="interesting_book_button">Mi interessa</string>
 
 </resources>

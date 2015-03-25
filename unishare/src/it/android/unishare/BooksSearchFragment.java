@@ -67,6 +67,7 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
     @Override
 	public void initializeUI(View view) {
     	adapter = activity.getAdapter();
+    	System.out.println(adapter.getCount());
     	listview = (ListView) view.findViewById(R.id.ListView1);
     	if(adapter.getCount() > 0){
     		listview.setAdapter(adapter);
@@ -90,7 +91,7 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
 	        	dialog.setTitle("Searching");
 	            dialog.setMessage("Please wait...");
 	            dialog.setIndeterminate(false);
-	        	activity.initializeFragmentUI(searchForm.getText().toString(), BooksSearchFragment.this, dialog);
+	        	activity.initializeFragmentUI(searchForm.getText().toString(), dialog);
 	        }
         });
     	
@@ -99,7 +100,6 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
 	public void displayResults(ArrayList<Entity> result, String tag) {
 		clearList(adapter);
 		adapter = activity.getAdapter();
-		System.out.println(adapter.getCount());
 		fillList(result);
 		MyApplication.alertMessage(activity, "Ricerca di '" + searchForm.getText().toString() + "'", (result.size()) + " risultati trovati");
 	}

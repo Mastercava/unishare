@@ -3,7 +3,6 @@ package it.android.unishare;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
@@ -12,15 +11,13 @@ public class AsynchRequest extends AsyncTask<Void,ArrayList<Entity>,ArrayList<En
 	private String url;
 	private String tag;
 	private SmartActivity activity;
-	private Fragment fragment;
 	private ProgressDialog dialog;
 	private float startedAt;
 	
-	public AsynchRequest setParameters(Activity activity, String url, String tag, Fragment fragment, ProgressDialog dialog) {
+	public AsynchRequest setParameters(Activity activity, String url, String tag, ProgressDialog dialog) {
 		this.url = url;
 		this.activity = (SmartActivity) activity;
-		this.tag = tag;
-		this.fragment = fragment;
+		this.tag = tag;;
 		this.dialog = dialog;
 		return this;
 	}
@@ -48,7 +45,7 @@ public class AsynchRequest extends AsyncTask<Void,ArrayList<Entity>,ArrayList<En
 			return;
 		}
 		dialog.dismiss();
-		activity.handleResult(result, tag, fragment);
+		activity.handleResult(result, tag);
 	}
 
 }

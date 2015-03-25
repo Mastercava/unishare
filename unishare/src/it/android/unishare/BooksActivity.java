@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import it.android.unishare.BooksSearchFragment.OnBookSelectedListener;
 import it.android.unishare.R;
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -31,7 +30,7 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
         application = MyApplication.getInstance(this);
         adapter = new BooksAdapter(this, new ArrayList<Entity>());
         /**
-         * Se il Bundle non è null significa che l'Entity è stata ricreata in seguito ad un cambio di configurazione, quindi
+         * Se il Bundle non ï¿½ null significa che l'Entity ï¿½ stata ricreata in seguito ad un cambio di configurazione, quindi
          * devo ripristinare il BooksSearchFragment con i valori presenti nell'adapter prima del cambio di configurazione
          */
         if(savedInstanceState != null){
@@ -71,7 +70,7 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
     	}
     	/**
     	 * Storing del BooksSearchFragment per poterne ripristinare lo stato in seguito ad un cambio di configurazione.
-    	 * I valori presenti nell'adapter vanno salvati a parte poichè non vengono conservati
+    	 * I valori presenti nell'adapter vanno salvati a parte poichï¿½ non vengono conservati
     	 */
         getFragmentManager().putFragment(outState, BOOKS_SEARCH_FRAGMENT_INSTANCE, booksSearchFragment);
     }
@@ -95,19 +94,19 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
         return super.onOptionsItemSelected(item);
     }
     
-    public void initializeFragmentUI(String text, Fragment fragment, ProgressDialog dialog){
+    public void initializeFragmentUI(String text, ProgressDialog dialog){
     	if(text != null && text != "") {
-    		application.databaseCall("books.php?q=" + text, "bookSearch", fragment, dialog);
+    		application.databaseCall("books.php?q=" + text, "bookSearch", dialog);
     	}
     }
 
 
 	@Override
-	public void handleResult(ArrayList<Entity> result, String tag, Fragment fragment) {
+	public void handleResult(ArrayList<Entity> result, String tag) {
 		if(tag == "bookSearch") {
 			adapter.addAll(result);
-			BooksSearchFragment bookFragment = (BooksSearchFragment)fragment;
-			bookFragment.displayResults(result, tag);
+			booksSearchFragment = (BooksSearchFragment) getFragmentManager().findFragmentByTag(BooksSearchFragment.TAG);			
+			booksSearchFragment.displayResults(result, tag);
 		}
 		
 	}

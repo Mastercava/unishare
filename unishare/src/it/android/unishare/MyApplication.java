@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -167,8 +166,8 @@ public class MyApplication extends android.app.Application {
 	*/
 	
 	//Create request to database
-	public void databaseCall(String url, String tag, Fragment fragment, ProgressDialog dialog) {
-		new AsynchRequest().setParameters(currentActivity,url,tag, fragment,dialog).execute();
+	public void databaseCall(String url, String tag, ProgressDialog dialog) {
+		new AsynchRequest().setParameters(currentActivity,url,tag,dialog).execute();
 	}
 	
 	//Creates alert box with a message
@@ -202,7 +201,7 @@ public class MyApplication extends android.app.Application {
 		AlertDialog.Builder builder = new AlertDialog.Builder(currentContext);
 		builder.setMessage(message);
 	    builder.setTitle(title);
-	    builder.setPositiveButton("Sì", actionTrue);
+	    builder.setPositiveButton("Sï¿½", actionTrue);
 	    builder.setNegativeButton("No", actionFalse);
 	    AlertDialog dialog = builder.create();
 	    dialog.show();
@@ -211,7 +210,7 @@ public class MyApplication extends android.app.Application {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage(message);
 	    builder.setTitle(title);
-	    builder.setPositiveButton("Sì", actionTrue);
+	    builder.setPositiveButton("Sï¿½", actionTrue);
 	    builder.setNegativeButton("No", actionFalse);
 	    AlertDialog dialog = builder.create();
 	    dialog.show();
