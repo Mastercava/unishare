@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,10 +19,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 public class BooksSearchFragment extends Fragment implements ViewInitiator {
-	
-	private static final String LIST_INSTANCE_STATE = "key_listview";
-	private static final String ADAPTER_VALUES = "key_adapter";
-	private static final String SEARCH_FORM = "search_form_content";
 	
 	public static final String TAG = "it.android.unishare.BooksSearchFragment";
 	
@@ -38,27 +33,17 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
 	ProgressDialog dialog;
 	BooksAdapter adapter;
 	
-	Parcelable listviewInstanceState;
-	ArrayList<Entity> adapterValues = new ArrayList<Entity>();
-	String searchFormContent = "";
-	
 	
 	public interface OnBookSelectedListener {
         public void onBookSelected(Entity book);
     }
 
     public BooksSearchFragment() {
-    	
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	if(view == null){
-    		if(savedInstanceState != null){
-        		listviewInstanceState = savedInstanceState.getParcelable(LIST_INSTANCE_STATE);
-        		adapterValues = savedInstanceState.getParcelableArrayList(ADAPTER_VALUES);
-        		searchFormContent = savedInstanceState.getString(SEARCH_FORM);
-        	}
     		view = inflater.inflate(R.layout.books_search_fragment, container, false);
             initializeUI(view);
     	}
@@ -80,22 +65,22 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
     
     
     @Override
-    public void onSaveInstanceState(Bundle outState){
-    	super.onSaveInstanceState(outState);
-    	ArrayList<Entity> values = new ArrayList<Entity>();
-    	for(int i = 0; i < adapter.getCount(); i++)
-    		values.add(adapter.getItem(i));
-    	outState.putParcelable(LIST_INSTANCE_STATE, listview.onSaveInstanceState());
-    	outState.putParcelableArrayList(ADAPTER_VALUES, values);
-    	outState.putString(SEARCH_FORM, searchForm.getText().toString());
-    }
-    
-    
-    @Override
 	public void initializeUI(View view) {
-    	adapter = new BooksAdapter(activity, new ArrayList<Entity>());
-    	System.out.println(adapter.getCount());
+    	adapter = activity.getAdapter();
     	listview = (ListView) view.findViewById(R.id.ListView1);
+    	if(adapter.getCount() > 0){
+    		listview.setAdapter(adapter);
+    		
+    		listview.setOnItemClickListener(new OnItemClickListener(){
+
+    			@Override
+    			public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
+    				Entity book = (Entity)parent.getItemAtPosition(position);
+    				BooksSearchFragment.this.bookListener.onBookSelected(book);			
+    			}
+    				
+    		});
+    	}    		
     	searchForm = (EditText) view.findViewById(R.id.editText1);
     	Button btn = (Button) view.findViewById(R.id.button1);
         btn.setOnClickListener(new OnClickListener() {
@@ -108,37 +93,19 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
 	        	activity.initializeFragmentUI(searchForm.getText().toString(), BooksSearchFragment.this, dialog);
 	        }
         });
-        
-        if(listviewInstanceState != null){
-        	searchForm.setText(searchFormContent);
-    		System.out.println(adapterValues.size());
-    		adapter.addAll(adapterValues); 
-    		System.out.println(Entity.entityArraylistToString(adapterValues));
-    		listview.setAdapter(adapter);
-    		listview.onRestoreInstanceState(listviewInstanceState);
-    		
-    		listview.setOnItemClickListener(new OnItemClickListener(){
-
-    			@Override
-    			public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
-    				Entity book = (Entity)parent.getItemAtPosition(position);
-    				BooksSearchFragment.this.bookListener.onBookSelected(book);			
-    			}
-    				
-    		});
-    	}	
     	
 	}
 
 	public void displayResults(ArrayList<Entity> result, String tag) {
 		clearList(adapter);
-		fillList(listview, result, adapter);
+		adapter = activity.getAdapter();
+		System.out.println(adapter.getCount());
+		fillList(result);
 		MyApplication.alertMessage(activity, "Ricerca di '" + searchForm.getText().toString() + "'", (result.size()) + " risultati trovati");
 	}
 	
-	private void fillList(ListView listview, ArrayList<Entity> result, BooksAdapter adapter) {
+	private void fillList(ArrayList<Entity> result) {
 		adapter.addAll(result);	
-		System.out.println(Entity.entityArraylistToString(result));
 		listview.setAdapter(adapter);
     		
 		listview.setOnItemClickListener(new OnItemClickListener(){
@@ -156,5 +123,4 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
 		adapter.clear();
 		adapter.notifyDataSetChanged();
 	}
-    
 }
