@@ -96,7 +96,7 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
     
     public void initializeFragmentUI(String text, ProgressDialog dialog){
     	if(text != null && text != "") {
-    		application.databaseCall("books.php?q=" + text, "bookSearch", dialog);
+    		searchBooks(0, text, dialog);
     	}
     }
 
@@ -127,6 +127,23 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
 	
 	public BooksAdapter getAdapter(){
 		return this.adapter;
+	}
+	
+	/////////////////////////////////////////////////
+	//Calls to database
+	/////////////////////////////////////////////////
+	
+	private void searchBooks(int campusId, String text, ProgressDialog dialog) {
+		application.databaseCall("books_search.php?q=" + text + "&s=" + campusId, "bookSearch", dialog);
+	}
+	
+	private void getBook(int bookId, ProgressDialog dialog) {
+		application.databaseCall("books_detail.php?id=" + bookId, "bookDetail", dialog);
+	}
+	
+	//USELESS FOR MOBILE?
+	private void getBookList(int campusId, ProgressDialog dialog) {
+		application.databaseCall("books.php?s=" + campusId, "bookList", dialog);
 	}
 
 }
