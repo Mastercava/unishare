@@ -201,20 +201,23 @@ public class MyApplication extends android.app.Application {
 		AlertDialog.Builder builder = new AlertDialog.Builder(currentContext);
 		builder.setMessage(message);
 	    builder.setTitle(title);
-	    builder.setPositiveButton("S�", actionTrue);
+	    builder.setPositiveButton("Si", actionTrue);
 	    builder.setNegativeButton("No", actionFalse);
 	    AlertDialog dialog = builder.create();
 	    dialog.show();
 	}
+	
+	/*
 	public static void alertDecision(Context context, String title, String message, DialogInterface.OnClickListener actionTrue, DialogInterface.OnClickListener actionFalse) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage(message);
 	    builder.setTitle(title);
-	    builder.setPositiveButton("S�", actionTrue);
+	    builder.setPositiveButton("Si", actionTrue);
 	    builder.setNegativeButton("No", actionFalse);
 	    AlertDialog dialog = builder.create();
 	    dialog.show();
 	}
+	*/
 	
 	public void toastMessage(Context context, String message) {
 		if(actualToast != null) actualToast.cancel();

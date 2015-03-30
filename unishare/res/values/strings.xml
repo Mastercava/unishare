@@ -12,5 +12,8 @@
     <string name="title_activity_splash">SplashActivity</string>
     <string name="interesting_book">Premi per ricevere maggiori informazioni sul venditore</string>
     <string name="interesting_book_button">Mi interessa</string>
+    <string name="title_activity_courses">Courses</string>
+    <string name="search_course_text">Inserisci il nome del corso o del professore:</string>
+    <string name="search_course_hint">Nome del corso o del professore</string>
 
 </resources>

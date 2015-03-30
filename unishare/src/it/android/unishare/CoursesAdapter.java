@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class BooksAdapter extends ArrayAdapter<Entity> {
+public class CoursesAdapter extends ArrayAdapter<Entity> {
 
-	public BooksAdapter(Context context, ArrayList<Entity> objects) {
+	public CoursesAdapter(Context context, ArrayList<Entity> objects) {
 		super(context, 0, objects);
 		// TODO Auto-generated constructor stub
 	}
@@ -28,8 +28,8 @@ public class BooksAdapter extends ArrayAdapter<Entity> {
 	       TextView title = (TextView) convertView.findViewById(R.id.first_column);
 	       TextView author = (TextView) convertView.findViewById(R.id.second_column);
 	       // Populate the data into the template view using the data object
-	       title.setText(entity.get("titolo"));
-	       author.setText(entity.get("autore"));
+	       title.setText(entity.get("nome"));
+	       author.setText(entity.get("professore"));
 	       // Return the completed view to render on screen
 	       return convertView;
 

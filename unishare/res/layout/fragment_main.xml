@@ -30,4 +30,12 @@
         android:layout_alignLeft="@+id/button2"
         android:text="Carica utente" />
 
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button2"
+        android:layout_below="@+id/button2"
+        android:text="Vai a Corsi" />
+
 </RelativeLayout>

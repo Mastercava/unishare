@@ -5,21 +5,29 @@ import java.util.ArrayList;
 import it.android.unishare.BooksSearchFragment.OnBookSelectedListener;
 import it.android.unishare.R;
 
+import android.R.integer;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class BooksActivity extends SmartActivity implements OnBookSelectedListener {
 	
+	public static final String TAG = "BooksActivity";
+	
 	private static final String BOOKS_SEARCH_FRAGMENT_INSTANCE = "books_search_fragment_key";
 	private static final String ADAPTER_VALUES = "key_adapter";
+	
+	private static final String BOOKS_SEARCH_TAG = "bookSearch";
+	private static final String BOOK_DETAILS_TAG = "bookDetail";
 
 	private MyApplication application;
 	private BooksSearchFragment booksSearchFragment;
 	private BooksAdapter adapter;
+	private Entity book;
 	
 	ArrayList<Entity> adapterValues = new ArrayList<Entity>();
 
@@ -30,12 +38,12 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
         application = MyApplication.getInstance(this);
         adapter = new BooksAdapter(this, new ArrayList<Entity>());
         /**
-         * Se il Bundle non ï¿½ null significa che l'Entity ï¿½ stata ricreata in seguito ad un cambio di configurazione, quindi
+         * Se il Bundle non è null significa che l'Entity è stata ricreata in seguito ad un cambio di configurazione, quindi
          * devo ripristinare il BooksSearchFragment con i valori presenti nell'adapter prima del cambio di configurazione
          */
         if(savedInstanceState != null){
         	booksSearchFragment = (BooksSearchFragment)getFragmentManager().getFragment(savedInstanceState, BOOKS_SEARCH_FRAGMENT_INSTANCE);
-        	System.out.println("Fragment esiste");
+        	Log.i(TAG, "Existing fragment");
 			adapterValues = savedInstanceState.getParcelableArrayList(ADAPTER_VALUES);
 			this.adapter.addAll(adapterValues);
         	FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -43,7 +51,7 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
         }
         else{
         	booksSearchFragment = new BooksSearchFragment();
-        	System.out.println("Fragment non trovato. Creo nuovo");
+        	Log.i(TAG, "Fragment not found. Creating new fragment");
         	getFragmentManager().beginTransaction()
         	.add(R.id.books_fragment_container, booksSearchFragment, BooksSearchFragment.TAG).commit();
         }       	
@@ -70,7 +78,7 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
     	}
     	/**
     	 * Storing del BooksSearchFragment per poterne ripristinare lo stato in seguito ad un cambio di configurazione.
-    	 * I valori presenti nell'adapter vanno salvati a parte poichï¿½ non vengono conservati
+    	 * I valori presenti nell'adapter vanno salvati a parte poichè non vengono conservati
     	 */
         getFragmentManager().putFragment(outState, BOOKS_SEARCH_FRAGMENT_INSTANCE, booksSearchFragment);
     }
@@ -103,22 +111,34 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
 
 	@Override
 	public void handleResult(ArrayList<Entity> result, String tag) {
-		if(tag == "bookSearch") {
+		if(tag == BOOKS_SEARCH_TAG) {
 			adapter.addAll(result);
 			booksSearchFragment = (BooksSearchFragment) getFragmentManager().findFragmentByTag(BooksSearchFragment.TAG);			
 			booksSearchFragment.displayResults(result, tag);
 		}
-		
+		if(tag == BOOK_DETAILS_TAG){
+			this.book = result.get(0);
+			Log.i(TAG, "BookId = " + book.get("id"));
+			BooksDetailsFragment booksDetailsFragment = new BooksDetailsFragment(book);
+			FragmentTransaction transaction = getFragmentManager().beginTransaction();
+			transaction.replace(R.id.books_fragment_container, booksDetailsFragment, BooksDetailsFragment.TAG);
+			transaction.addToBackStack(null);
+			transaction.commit();	
+		}
 	}
 
 
 	@Override
-	public void onBookSelected(Entity book) {
+	public void onBookSelected(String bookId, ProgressDialog dialog) {
+		int id = Integer.parseInt(bookId);
+		getBook(id, dialog);
+		/*
 		BooksDetailsFragment booksDetailsFragment = new BooksDetailsFragment(book);
 		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.replace(R.id.books_fragment_container, booksDetailsFragment, BooksDetailsFragment.TAG);
 		transaction.addToBackStack(null);
 		transaction.commit();	
+		*/
 	}
 	
 	public void setAdapter(BooksAdapter adapter){
@@ -134,11 +154,11 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
 	/////////////////////////////////////////////////
 	
 	private void searchBooks(int campusId, String text, ProgressDialog dialog) {
-		application.databaseCall("books_search.php?q=" + text + "&s=" + campusId, "bookSearch", dialog);
+		application.databaseCall("books_search.php?q=" + text + "&s=" + campusId, BOOKS_SEARCH_TAG, dialog);
 	}
 	
 	private void getBook(int bookId, ProgressDialog dialog) {
-		application.databaseCall("books_detail.php?id=" + bookId, "bookDetail", dialog);
+		application.databaseCall("books_detail.php?id=" + bookId, BOOK_DETAILS_TAG, dialog);
 	}
 	
 	//USELESS FOR MOBILE?
