@@ -44,6 +44,8 @@ public class CoursesSearchFragment extends Fragment implements ViewInitiator {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		this.activity = (CoursesActivity) activity;
+		if(activity instanceof CoursesActivity)
+			Log.i(TAG, "Activity is CourseActivity");
 		/*
 		try {
             this.courseListener = (OnCourseSelectedListener) activity;

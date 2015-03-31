@@ -56,7 +56,6 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		this.activity = (BooksActivity) activity;
-		this.dialog = new ProgressDialog(getActivity());
 		try {
             this.bookListener = (OnBookSelectedListener) activity;
         }
@@ -80,6 +79,10 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
     				Entity book = (Entity)parent.getItemAtPosition(position);
     				String bookId = book.get("id");
     				Log.i(TAG, "Clicked on " + bookId);
+    				dialog = new ProgressDialog(getActivity());
+    	        	dialog.setTitle("Searching");
+    	            dialog.setMessage("Please wait...");
+    	            dialog.setIndeterminate(false);
     				BooksSearchFragment.this.bookListener.onBookSelected(bookId, dialog);			
     			}
     				
@@ -90,7 +93,7 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
         btn.setOnClickListener(new OnClickListener() {
 	        @Override
 	        public void onClick(View view) {
-	        	//dialog = new ProgressDialog(getActivity());
+	        	dialog = new ProgressDialog(getActivity());
 	        	dialog.setTitle("Searching");
 	            dialog.setMessage("Please wait...");
 	            dialog.setIndeterminate(false);
@@ -118,6 +121,10 @@ public class BooksSearchFragment extends Fragment implements ViewInitiator {
 				Entity book = (Entity)parent.getItemAtPosition(position);
 				String bookId = book.get("id");
 				Log.i(TAG, "Clicked on " + bookId);
+				dialog = new ProgressDialog(getActivity());
+	        	dialog.setTitle("Searching");
+	            dialog.setMessage("Please wait...");
+	            dialog.setIndeterminate(false);
 				BooksSearchFragment.this.bookListener.onBookSelected(bookId, dialog);			
 			}
 				
