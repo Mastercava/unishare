@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class CoursesActivity extends SmartActivity {
+public class CoursesActivity extends AdapterActivity {
 	
 	public static final String TAG = "CoursesActivity";
 	
@@ -19,7 +19,7 @@ public class CoursesActivity extends SmartActivity {
 	private static final String COURSE_SEARCH_TAG = "courseSearch";
 	
 	private MyApplication application;
-	private CoursesSearchFragment coursesSearchFragment;
+	private SearchFragment searchFragment;
 	private CoursesAdapter adapter;
 	
 	ArrayList<Entity> adapterValues = new ArrayList<Entity>();
@@ -35,18 +35,18 @@ public class CoursesActivity extends SmartActivity {
          * devo ripristinare il BooksSearchFragment con i valori presenti nell'adapter prima del cambio di configurazione
          */
         if(savedInstanceState != null){
-        	coursesSearchFragment = (CoursesSearchFragment)getFragmentManager().getFragment(savedInstanceState, COURSES_SEARCH_FRAGMENT_INSTANCE);
+        	searchFragment = (SearchFragment)getFragmentManager().getFragment(savedInstanceState, COURSES_SEARCH_FRAGMENT_INSTANCE);
         	Log.i(TAG, "Existing fragment");
 			adapterValues = savedInstanceState.getParcelableArrayList(ADAPTER_VALUES);
 			this.adapter.addAll(adapterValues);
         	FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        	transaction.add(R.id.books_fragment_container, coursesSearchFragment, CoursesSearchFragment.TAG);
+        	transaction.add(R.id.books_fragment_container, searchFragment, SearchFragment.TAG);
         }
         else{
-        	coursesSearchFragment = new CoursesSearchFragment();
+        	searchFragment = new SearchFragment();
         	Log.i(TAG, "Fragment not found. Creating new fragment");
         	getFragmentManager().beginTransaction()
-        	.add(R.id.books_fragment_container, coursesSearchFragment, CoursesSearchFragment.TAG).commit();
+        	.add(R.id.books_fragment_container, searchFragment, SearchFragment.TAG).commit();
         }       	
 	}
 	
@@ -73,7 +73,7 @@ public class CoursesActivity extends SmartActivity {
     	 * Storing del CoursesSearchFragment per poterne ripristinare lo stato in seguito ad un cambio di configurazione.
     	 * I valori presenti nell'adapter vanno salvati a parte poichè non vengono conservati
     	 */
-        getFragmentManager().putFragment(outState, COURSES_SEARCH_FRAGMENT_INSTANCE, coursesSearchFragment);
+        getFragmentManager().putFragment(outState, COURSES_SEARCH_FRAGMENT_INSTANCE, searchFragment);
     }
 
 	@Override
@@ -105,12 +105,13 @@ public class CoursesActivity extends SmartActivity {
 	public void handleResult(ArrayList<Entity> result, String tag) {
 		if(tag == COURSE_SEARCH_TAG) {
 			adapter.addAll(result);
-			coursesSearchFragment = (CoursesSearchFragment) getFragmentManager().findFragmentByTag(CoursesSearchFragment.TAG);			
-			coursesSearchFragment.displayResults(result, tag);
+			searchFragment = (SearchFragment) getFragmentManager().findFragmentByTag(SearchFragment.TAG);			
+			searchFragment.displayResults(result, tag);
 		}
 		
 	}
 	
+	@Override
 	public CoursesAdapter getAdapter(){
 		return this.adapter;
 	}

@@ -2,10 +2,9 @@ package it.android.unishare;
 
 import java.util.ArrayList;
 
-import it.android.unishare.BooksSearchFragment.OnBookSelectedListener;
+import it.android.unishare.SearchFragment.OnBookSelectedListener;
 import it.android.unishare.R;
 
-import android.R.integer;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -14,7 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class BooksActivity extends SmartActivity implements OnBookSelectedListener {
+public class BooksActivity extends AdapterActivity implements OnBookSelectedListener {
 	
 	public static final String TAG = "BooksActivity";
 	
@@ -25,7 +24,7 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
 	private static final String BOOK_DETAILS_TAG = "bookDetail";
 
 	private MyApplication application;
-	private BooksSearchFragment booksSearchFragment;
+	private SearchFragment searchFragment;
 	private BooksAdapter adapter;
 	private Entity book;
 	
@@ -42,18 +41,18 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
          * devo ripristinare il BooksSearchFragment con i valori presenti nell'adapter prima del cambio di configurazione
          */
         if(savedInstanceState != null){
-        	booksSearchFragment = (BooksSearchFragment)getFragmentManager().getFragment(savedInstanceState, BOOKS_SEARCH_FRAGMENT_INSTANCE);
+        	searchFragment = (SearchFragment)getFragmentManager().getFragment(savedInstanceState, BOOKS_SEARCH_FRAGMENT_INSTANCE);
         	Log.i(TAG, "Existing fragment");
 			adapterValues = savedInstanceState.getParcelableArrayList(ADAPTER_VALUES);
 			this.adapter.addAll(adapterValues);
         	FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        	transaction.add(R.id.books_fragment_container, booksSearchFragment, BooksSearchFragment.TAG);
+        	transaction.add(R.id.books_fragment_container, searchFragment, SearchFragment.TAG);
         }
         else{
-        	booksSearchFragment = new BooksSearchFragment();
+        	searchFragment = new SearchFragment();
         	Log.i(TAG, "Fragment not found. Creating new fragment");
         	getFragmentManager().beginTransaction()
-        	.add(R.id.books_fragment_container, booksSearchFragment, BooksSearchFragment.TAG).commit();
+        	.add(R.id.books_fragment_container, searchFragment, SearchFragment.TAG).commit();
         }       	
     }
 
@@ -80,7 +79,7 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
     	 * Storing del BooksSearchFragment per poterne ripristinare lo stato in seguito ad un cambio di configurazione.
     	 * I valori presenti nell'adapter vanno salvati a parte poichè non vengono conservati
     	 */
-        getFragmentManager().putFragment(outState, BOOKS_SEARCH_FRAGMENT_INSTANCE, booksSearchFragment);
+        getFragmentManager().putFragment(outState, BOOKS_SEARCH_FRAGMENT_INSTANCE, searchFragment);
     }
 
     @Override
@@ -113,8 +112,8 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
 	public void handleResult(ArrayList<Entity> result, String tag) {
 		if(tag == BOOKS_SEARCH_TAG) {
 			adapter.addAll(result);
-			booksSearchFragment = (BooksSearchFragment) getFragmentManager().findFragmentByTag(BooksSearchFragment.TAG);			
-			booksSearchFragment.displayResults(result, tag);
+			searchFragment = (SearchFragment) getFragmentManager().findFragmentByTag(SearchFragment.TAG);			
+			searchFragment.displayResults(result, tag);
 		}
 		if(tag == BOOK_DETAILS_TAG){
 			this.book = result.get(0);
@@ -141,10 +140,7 @@ public class BooksActivity extends SmartActivity implements OnBookSelectedListen
 		*/
 	}
 	
-	public void setAdapter(BooksAdapter adapter){
-		this.adapter = adapter;
-	}
-	
+	@Override
 	public BooksAdapter getAdapter(){
 		return this.adapter;
 	}
