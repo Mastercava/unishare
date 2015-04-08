@@ -26,9 +26,9 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int LinearLayout1=0x7f0a0019;
+        public static final int LinearLayout1=0x7f0a0018;
         public static final int ListView1=0x7f0a0010;
-        public static final int action_settings=0x7f0a0020;
+        public static final int action_settings=0x7f0a001f;
         public static final int books_fragment_container=0x7f0a0009;
         public static final int button1=0x7f0a000e;
         public static final int button2=0x7f0a0011;
@@ -41,24 +41,23 @@ public final class R {
         public static final int email=0x7f0a0004;
         public static final int email_login_form=0x7f0a0003;
         public static final int email_sign_in_button=0x7f0a0007;
-        public static final int first_column=0x7f0a001a;
-        public static final int layout=0x7f0a001e;
+        public static final int first_column=0x7f0a0019;
+        public static final int layout=0x7f0a001d;
         public static final int login=0x7f0a0006;
         public static final int login_form=0x7f0a0002;
         public static final int login_progress=0x7f0a0001;
         public static final int opinion=0x7f0a0016;
         public static final int opinionsListView=0x7f0a0014;
         public static final int password=0x7f0a0005;
-        public static final int rating=0x7f0a0017;
-        public static final int ratingBar1=0x7f0a0018;
-        public static final int second_column=0x7f0a001b;
-        public static final int splashImageView=0x7f0a001d;
-        public static final int splash_fragment_container=0x7f0a001c;
+        public static final int ratingBar=0x7f0a0017;
+        public static final int second_column=0x7f0a001a;
+        public static final int splashImageView=0x7f0a001c;
+        public static final int splash_fragment_container=0x7f0a001b;
         public static final int textView1=0x7f0a000a;
         public static final int textView2=0x7f0a000b;
         public static final int textView3=0x7f0a000c;
         public static final int textView4=0x7f0a000d;
-        public static final int update=0x7f0a001f;
+        public static final int update=0x7f0a001e;
     }
     public static final class layout {
         public static final int activity_courses=0x7f030000;

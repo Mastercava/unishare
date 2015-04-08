@@ -16,7 +16,9 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 	public static final String TAG = "CoursesActivity";
 	
 	private static final String COURSES_SEARCH_FRAGMENT_INSTANCE = "courses_search_fragment_key";
+	private static final String COURSE_NAME = "course_name_key";
 	private static final String ADAPTER_VALUES = "key_adapter";
+	private static final String COURSE_ID = "course_id_key";
 	
 	private static final String COURSE_SEARCH_TAG = "courseSearch";
 	private static final String OPINION_TAG = "opinionSearch";
@@ -27,9 +29,11 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 	private CoursesAdapter coursesAdapter;
 	private OpinionsAdapter opinionsAdapter;
 	
-	String courseName;
+	private String courseName;
+	private int courseId;
 	
 	ArrayList<Entity> adapterValues = new ArrayList<Entity>();
+	ArrayList<Entity> opinionAdapterValues = new ArrayList<Entity>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,16 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 			this.coursesAdapter.addAll(adapterValues);
         	FragmentTransaction transaction = getFragmentManager().beginTransaction();
         	transaction.add(R.id.courses_fragment_container, searchFragment, SearchFragment.TAG);
+        	/*
+        	if(savedInstanceState.getInt(COURSE_ID)){
+        		this.courseName = savedInstanceState.getString(COURSE_NAME);
+        		this.courseId = savedInstanceState.getInt(COURSE_ID);
+        		ProgressDialog dialog = new ProgressDialog(this);
+        		dialog.setTitle("Searching");
+        		dialog.setMessage("Please wait...");
+        		getOpinion(courseId, dialog);
+        	}
+        	*/
         }
         else{
         	searchFragment = new SearchFragment();
@@ -68,6 +82,7 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
     public void onSaveInstanceState(Bundle outState){
     	super.onSaveInstanceState(outState);
     	ArrayList<Entity> values = new ArrayList<Entity>();
+    	ArrayList<Entity> opinions = new ArrayList<Entity>();
     	/**
     	 * Storing nel Bundle dei valori presenti nell'adapter, in questo modo possono essere ripristinati in seguito
     	 * ad un cambio di configurazione, come il cambio di orientamento del dispositivo
@@ -76,12 +91,16 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
     		for(int i = 0; i < coursesAdapter.getCount(); i++)
         		values.add(coursesAdapter.getItem(i));
         	outState.putParcelableArrayList(ADAPTER_VALUES, values);
-    	}
+    	} 	
     	/**
     	 * Storing del CoursesSearchFragment per poterne ripristinare lo stato in seguito ad un cambio di configurazione.
     	 * I valori presenti nell'adapter vanno salvati a parte poichè non vengono conservati
     	 */
         getFragmentManager().putFragment(outState, COURSES_SEARCH_FRAGMENT_INSTANCE, searchFragment);
+        if(this.courseName != null){
+        	outState.putString(COURSE_NAME, this.courseName);
+        	outState.putInt(COURSE_ID, this.courseId);
+        }
     }
 
 	@Override
@@ -135,8 +154,8 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 	@Override
 	public void onCourseSelected(String courseId, String courseName, ProgressDialog dialog) {
 		this.courseName = courseName;
-		int id = Integer.parseInt(courseId);
-		getOpinion(id, dialog);
+		this.courseId = Integer.parseInt(courseId);
+		getOpinion(this.courseId, dialog);
 		
 	}
 	

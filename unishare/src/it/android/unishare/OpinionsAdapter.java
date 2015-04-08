@@ -28,12 +28,10 @@ public class OpinionsAdapter extends ArrayAdapter<Entity> {
 	       // Lookup view for data population
 	       TextView date = (TextView) convertView.findViewById(R.id.date);
 	       TextView opinion = (TextView) convertView.findViewById(R.id.opinion);
-	       TextView rating = (TextView) convertView.findViewById(R.id.rating);
-	       RatingBar ratingBar = (RatingBar) convertView.findViewById(R.id.ratingBar1);
+	       RatingBar ratingBar = (RatingBar) convertView.findViewById(R.id.ratingBar);
 	       // Populate the data into the template view using the data object
 	       date.setText(entity.get("data"));
 	       opinion.setText(entity.get("commento"));
-	       rating.setText(entity.get("voto"));
 	       ratingBar.setRating(Float.parseFloat(entity.get("voto")));
 	       // Return the completed view to render on screen
 	       return convertView;

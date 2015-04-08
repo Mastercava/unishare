@@ -58,8 +58,12 @@ public class OpinionsFragment extends Fragment implements ViewInitiator {
 		listview = (ListView) view.findViewById(R.id.opinionsListView);
     	if(opinionsAdapter.getCount() > 0)
     		listview.setAdapter(opinionsAdapter);
-    	else 
-			Log.i(TAG, "No opinions for this course");
+    	else{
+    		Log.i(TAG, "No opinions for this course");
+    		String title = "";
+    		String message = "Nessuna opinione presente per questo corso";
+    		MyApplication.alertMessage(getActivity(), title, message);
+    	}			
 		TextView courseNameTextView = (TextView) view.findViewById(R.id.courseName);
 		courseNameTextView.setText(courseName);
 	}
