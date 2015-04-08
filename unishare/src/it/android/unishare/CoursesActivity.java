@@ -1,5 +1,7 @@
 package it.android.unishare;
 
+import it.android.unishare.SearchFragment.OnCourseSelectedListener;
+
 import java.util.ArrayList;
 
 import android.app.FragmentTransaction;
@@ -9,7 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class CoursesActivity extends AdapterActivity {
+public class CoursesActivity extends AdapterActivity implements OnCourseSelectedListener{
 	
 	public static final String TAG = "CoursesActivity";
 	
@@ -17,10 +19,15 @@ public class CoursesActivity extends AdapterActivity {
 	private static final String ADAPTER_VALUES = "key_adapter";
 	
 	private static final String COURSE_SEARCH_TAG = "courseSearch";
+	private static final String OPINION_TAG = "opinionSearch";
 	
 	private MyApplication application;
 	private SearchFragment searchFragment;
-	private CoursesAdapter adapter;
+	private OpinionsFragment opinionsFragment;
+	private CoursesAdapter coursesAdapter;
+	private OpinionsAdapter opinionsAdapter;
+	
+	String courseName;
 	
 	ArrayList<Entity> adapterValues = new ArrayList<Entity>();
 
@@ -29,7 +36,8 @@ public class CoursesActivity extends AdapterActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_courses);
 		application = MyApplication.getInstance(this);
-		adapter = new CoursesAdapter(this, new ArrayList<Entity>());
+		coursesAdapter = new CoursesAdapter(this, new ArrayList<Entity>());
+		opinionsAdapter = new OpinionsAdapter(this, new ArrayList<Entity>());
         /**
          * Se il Bundle non è null significa che l'Entity è stata ricreata in seguito ad un cambio di configurazione, quindi
          * devo ripristinare il BooksSearchFragment con i valori presenti nell'adapter prima del cambio di configurazione
@@ -38,15 +46,15 @@ public class CoursesActivity extends AdapterActivity {
         	searchFragment = (SearchFragment)getFragmentManager().getFragment(savedInstanceState, COURSES_SEARCH_FRAGMENT_INSTANCE);
         	Log.i(TAG, "Existing fragment");
 			adapterValues = savedInstanceState.getParcelableArrayList(ADAPTER_VALUES);
-			this.adapter.addAll(adapterValues);
+			this.coursesAdapter.addAll(adapterValues);
         	FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        	transaction.add(R.id.books_fragment_container, searchFragment, SearchFragment.TAG);
+        	transaction.add(R.id.courses_fragment_container, searchFragment, SearchFragment.TAG);
         }
         else{
         	searchFragment = new SearchFragment();
         	Log.i(TAG, "Fragment not found. Creating new fragment");
         	getFragmentManager().beginTransaction()
-        	.add(R.id.books_fragment_container, searchFragment, SearchFragment.TAG).commit();
+        	.add(R.id.courses_fragment_container, searchFragment, SearchFragment.TAG).commit();
         }       	
 	}
 	
@@ -64,9 +72,9 @@ public class CoursesActivity extends AdapterActivity {
     	 * Storing nel Bundle dei valori presenti nell'adapter, in questo modo possono essere ripristinati in seguito
     	 * ad un cambio di configurazione, come il cambio di orientamento del dispositivo
     	 */
-    	if(adapter != null){
-    		for(int i = 0; i < adapter.getCount(); i++)
-        		values.add(adapter.getItem(i));
+    	if(coursesAdapter != null){
+    		for(int i = 0; i < coursesAdapter.getCount(); i++)
+        		values.add(coursesAdapter.getItem(i));
         	outState.putParcelableArrayList(ADAPTER_VALUES, values);
     	}
     	/**
@@ -104,16 +112,36 @@ public class CoursesActivity extends AdapterActivity {
 	@Override
 	public void handleResult(ArrayList<Entity> result, String tag) {
 		if(tag == COURSE_SEARCH_TAG) {
-			adapter.addAll(result);
+			coursesAdapter.addAll(result);
 			searchFragment = (SearchFragment) getFragmentManager().findFragmentByTag(SearchFragment.TAG);			
 			searchFragment.displayResults(result, tag);
+		}
+		if(tag == OPINION_TAG){
+			opinionsAdapter.addAll(result);
+			opinionsFragment = new OpinionsFragment(courseName, result);
+			FragmentTransaction transaction = getFragmentManager().beginTransaction();
+			transaction.replace(R.id.courses_fragment_container, opinionsFragment, OpinionsFragment.TAG);
+			transaction.addToBackStack(null);
+			transaction.commit();	
 		}
 		
 	}
 	
 	@Override
 	public CoursesAdapter getAdapter(){
-		return this.adapter;
+		return this.coursesAdapter;
+	}
+	
+	@Override
+	public void onCourseSelected(String courseId, String courseName, ProgressDialog dialog) {
+		this.courseName = courseName;
+		int id = Integer.parseInt(courseId);
+		getOpinion(id, dialog);
+		
+	}
+	
+	public OpinionsAdapter getOpinionsAdapter(){
+		return this.opinionsAdapter;
 	}
 	
 	/////////////////////////////////
@@ -123,4 +151,9 @@ public class CoursesActivity extends AdapterActivity {
 	private void searchCourses(int campusId, String text, ProgressDialog dialog) {
 		application.databaseCall("courses_search.php?q=" + text + "&s=" + campusId, COURSE_SEARCH_TAG, dialog);	
 	}
+	
+	private void getOpinion(int courseId, ProgressDialog dialog){
+		application.databaseCall("opinions.php?id=" + courseId, OPINION_TAG, dialog);
+	}
+
 }

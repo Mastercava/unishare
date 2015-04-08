@@ -28,6 +28,7 @@ public class SearchFragment extends Fragment implements ViewInitiator {
 	private View view;
 	
 	private OnBookSelectedListener bookListener;
+	private OnCourseSelectedListener courseListener;
 	
 	//UI elements
 	ListView listview;
@@ -39,6 +40,10 @@ public class SearchFragment extends Fragment implements ViewInitiator {
 	public interface OnBookSelectedListener {
         public void onBookSelected(String bookId, ProgressDialog dialog);
     }
+	
+	public interface OnCourseSelectedListener {
+		public void onCourseSelected(String courseId, String courseName, ProgressDialog dialog);
+	}
 
     public SearchFragment() {
     }
@@ -63,6 +68,12 @@ public class SearchFragment extends Fragment implements ViewInitiator {
 		if(activity instanceof CoursesActivity){
 			this.activity = (CoursesActivity) activity;
 			Log.i(TAG, "fragment launched by CoursesActivity");
+			try{
+				this.courseListener = (OnCourseSelectedListener) activity;
+			}
+			catch(ClassCastException e){
+				throw new ClassCastException(activity.toString() + " must implement OnCourseSelectedListener");
+			}
 		}
 		else {
 			this.activity = (BooksActivity) activity;
@@ -91,7 +102,7 @@ public class SearchFragment extends Fragment implements ViewInitiator {
     				public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
     					Entity book = (Entity)parent.getItemAtPosition(position);
     					String bookId = book.get("id");
-    					Log.i(TAG, "Clicked on " + bookId);
+    					Log.i(TAG, "Clicked on book " + bookId);
     					dialog = new ProgressDialog(getActivity());
     		        	dialog.setTitle("Searching");
     		            dialog.setMessage("Please wait...");
@@ -100,6 +111,23 @@ public class SearchFragment extends Fragment implements ViewInitiator {
     				}
     					
     			});
+    		}
+    		else{
+    			listview.setOnItemClickListener(new OnItemClickListener() {
+    				
+    				@Override
+    				public void onItemClick(AdapterView<?> parent, View view, int position,	long id){
+    					Entity course = (Entity)parent.getItemAtPosition(position);
+    					String courseId = course.get("id");
+    					String courseName = course.get("nome");
+    					Log.i(TAG, "Clicked on course " + courseId);
+    					dialog = new ProgressDialog(getActivity());
+    		        	dialog.setTitle("Searching");
+    		            dialog.setMessage("Please wait...");
+    		            dialog.setIndeterminate(false);
+    		            SearchFragment.this.courseListener.onCourseSelected(courseId, courseName, dialog);
+    				}
+				});
     		}
     	}    		
     	searchForm = (EditText) view.findViewById(R.id.editText1);
@@ -135,7 +163,7 @@ public class SearchFragment extends Fragment implements ViewInitiator {
 				public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
 					Entity book = (Entity)parent.getItemAtPosition(position);
 					String bookId = book.get("id");
-					Log.i(TAG, "Clicked on " + bookId);
+					Log.i(TAG, "Clicked on book " + bookId);
 					dialog = new ProgressDialog(getActivity());
 		        	dialog.setTitle("Searching");
 		            dialog.setMessage("Please wait...");
@@ -144,7 +172,24 @@ public class SearchFragment extends Fragment implements ViewInitiator {
 				}
 					
 			});
-		}	
+		}
+		else{
+			listview.setOnItemClickListener(new OnItemClickListener() {
+				
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position,	long id){
+					Entity course = (Entity)parent.getItemAtPosition(position);
+					String courseId = course.get("id");
+					String courseName = course.get("nome");
+					Log.i(TAG, "Clicked on course " + courseId);
+					dialog = new ProgressDialog(getActivity());
+		        	dialog.setTitle("Searching");
+		            dialog.setMessage("Please wait...");
+		            dialog.setIndeterminate(false);
+		            SearchFragment.this.courseListener.onCourseSelected(courseId, courseName, dialog);
+				}
+			});
+		}
 	}
 	
 	public static void clearList(ArrayAdapter<Entity> adapter) {
