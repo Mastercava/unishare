@@ -113,7 +113,7 @@ public class BooksActivity extends AdapterActivity implements OnBookSelectedList
 		if(tag == BOOKS_SEARCH_TAG) {
 			adapter.addAll(result);
 			searchFragment = (SearchFragment) getFragmentManager().findFragmentByTag(SearchFragment.TAG);			
-			searchFragment.displayResults(result, tag);
+			searchFragment.displayResults(tag);
 		}
 		if(tag == BOOK_DETAILS_TAG){
 			this.book = result.get(0);

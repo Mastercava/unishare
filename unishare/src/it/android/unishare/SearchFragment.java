@@ -1,7 +1,5 @@
 package it.android.unishare;
 
-import java.util.ArrayList;
-
 import it.android.unishare.R;
 
 import android.app.Activity;
@@ -91,6 +89,7 @@ public class SearchFragment extends Fragment implements ViewInitiator {
     @Override
 	public void initializeUI(View view) {
     	adapter = activity.getAdapter();
+    	Log.i(TAG, "l'adapter dell'activity ha dimensione " + activity.getAdapter().getCount());
     	listview = (ListView) view.findViewById(R.id.ListView1);
     	if(adapter.getCount() > 0){
     		listview.setAdapter(adapter);
@@ -135,6 +134,7 @@ public class SearchFragment extends Fragment implements ViewInitiator {
         btn.setOnClickListener(new OnClickListener() {
 	        @Override
 	        public void onClick(View view) {
+	        	clearList(adapter);
 	        	dialog = new ProgressDialog(getActivity());
 	        	dialog.setTitle("Searching");
 	            dialog.setMessage("Please wait...");
@@ -145,15 +145,15 @@ public class SearchFragment extends Fragment implements ViewInitiator {
     	
 	}
 
-	public void displayResults(ArrayList<Entity> result, String tag) {
-		clearList(adapter);
+	public void displayResults(String tag) {
 		adapter = activity.getAdapter();
-		fillList(result);
-		MyApplication.alertMessage(activity, "Ricerca di '" + searchForm.getText().toString() + "'", (result.size()) + " risultati trovati");
+		Log.i(TAG, "l'adapter dell'activity ha dimensione " + activity.getAdapter().getCount());
+		fillList();
+		MyApplication.alertMessage(activity, "Ricerca di '" + searchForm.getText().toString() + "'", (adapter.getCount()) + " risultati trovati");
 	}
 	
-	private void fillList(ArrayList<Entity> result) {
-		adapter.addAll(result);	
+	private void fillList() {
+		//adapter.addAll(result);	
 		listview.setAdapter(adapter);
     	
 		if(this.activity instanceof BooksActivity){

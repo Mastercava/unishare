@@ -15,11 +15,18 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 	
 	public static final String TAG = "CoursesActivity";
 	
+	/**
+	 * Keys necessarie per ripristinare lo stato dei Fragment associati all'activity dopo un cambio di configurazione
+	 * (es. cambio orientamento dispositivo)
+	 */
 	private static final String COURSES_SEARCH_FRAGMENT_INSTANCE = "courses_search_fragment_key";
 	private static final String COURSE_NAME = "course_name_key";
 	private static final String ADAPTER_VALUES = "key_adapter";
-	private static final String COURSE_ID = "course_id_key";
+	private static final String OPINION_ADAPTER_VALUES = "key_opinion_adapter";
 	
+	/**
+	 * Tag necessari per distinguere le chiamate al db esterno e le relative risposte
+	 */
 	private static final String COURSE_SEARCH_TAG = "courseSearch";
 	private static final String OPINION_TAG = "opinionSearch";
 	
@@ -41,7 +48,6 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 		setContentView(R.layout.activity_courses);
 		application = MyApplication.getInstance(this);
 		coursesAdapter = new CoursesAdapter(this, new ArrayList<Entity>());
-		opinionsAdapter = new OpinionsAdapter(this, new ArrayList<Entity>());
         /**
          * Se il Bundle non è null significa che l'Entity è stata ricreata in seguito ad un cambio di configurazione, quindi
          * devo ripristinare il BooksSearchFragment con i valori presenti nell'adapter prima del cambio di configurazione
@@ -53,16 +59,14 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 			this.coursesAdapter.addAll(adapterValues);
         	FragmentTransaction transaction = getFragmentManager().beginTransaction();
         	transaction.add(R.id.courses_fragment_container, searchFragment, SearchFragment.TAG);
-        	/*
-        	if(savedInstanceState.getInt(COURSE_ID)){
+        	
+        	if(savedInstanceState.getString(COURSE_NAME) != null){
         		this.courseName = savedInstanceState.getString(COURSE_NAME);
-        		this.courseId = savedInstanceState.getInt(COURSE_ID);
-        		ProgressDialog dialog = new ProgressDialog(this);
-        		dialog.setTitle("Searching");
-        		dialog.setMessage("Please wait...");
-        		getOpinion(courseId, dialog);
+        		opinionAdapterValues = savedInstanceState.getParcelableArrayList(OPINION_ADAPTER_VALUES);
+        		opinionsAdapter = new OpinionsAdapter(this, new ArrayList<Entity>());
+        		opinionsAdapter.addAll(opinionAdapterValues);
         	}
-        	*/
+        	
         }
         else{
         	searchFragment = new SearchFragment();
@@ -82,7 +86,6 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
     public void onSaveInstanceState(Bundle outState){
     	super.onSaveInstanceState(outState);
     	ArrayList<Entity> values = new ArrayList<Entity>();
-    	ArrayList<Entity> opinions = new ArrayList<Entity>();
     	/**
     	 * Storing nel Bundle dei valori presenti nell'adapter, in questo modo possono essere ripristinati in seguito
     	 * ad un cambio di configurazione, come il cambio di orientamento del dispositivo
@@ -99,7 +102,13 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
         getFragmentManager().putFragment(outState, COURSES_SEARCH_FRAGMENT_INSTANCE, searchFragment);
         if(this.courseName != null){
         	outState.putString(COURSE_NAME, this.courseName);
-        	outState.putInt(COURSE_ID, this.courseId);
+        	ArrayList<Entity> opinions = new ArrayList<Entity>();
+        	if(opinionsAdapter != null){
+        		for(int i = 0; i < opinionsAdapter.getCount(); i++)
+        			opinions.add(opinionsAdapter.getItem(i));
+        		outState.putParcelableArrayList(OPINION_ADAPTER_VALUES, opinions);
+        	}
+        		
         }
     }
 
@@ -133,17 +142,22 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 		if(tag == COURSE_SEARCH_TAG) {
 			coursesAdapter.addAll(result);
 			searchFragment = (SearchFragment) getFragmentManager().findFragmentByTag(SearchFragment.TAG);			
-			searchFragment.displayResults(result, tag);
+			searchFragment.displayResults(tag);
 		}
 		if(tag == OPINION_TAG){
+			opinionsAdapter = new OpinionsAdapter(this, new ArrayList<Entity>());
 			opinionsAdapter.addAll(result);
-			opinionsFragment = new OpinionsFragment(courseName, result);
-			FragmentTransaction transaction = getFragmentManager().beginTransaction();
-			transaction.replace(R.id.courses_fragment_container, opinionsFragment, OpinionsFragment.TAG);
-			transaction.addToBackStack(null);
-			transaction.commit();	
+			createOpinionFragment();
 		}
 		
+	}
+	
+	private void createOpinionFragment(){
+		opinionsFragment = new OpinionsFragment(courseName);
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.replace(R.id.courses_fragment_container, opinionsFragment, OpinionsFragment.TAG);
+		transaction.addToBackStack(null);
+		transaction.commit();	
 	}
 	
 	@Override
@@ -161,6 +175,10 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 	
 	public OpinionsAdapter getOpinionsAdapter(){
 		return this.opinionsAdapter;
+	}
+	
+	public String getCourseName(){
+		return this.courseName;
 	}
 	
 	/////////////////////////////////

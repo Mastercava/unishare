@@ -1,6 +1,5 @@
 package it.android.unishare;
 
-import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -21,25 +20,20 @@ public class OpinionsFragment extends Fragment implements ViewInitiator {
 	private ListView listview;
 	
 	private CoursesActivity activity;
-	private ArrayList<Entity> result = new ArrayList<Entity>();
 	private OpinionsAdapter opinionsAdapter;
 	
 	public OpinionsFragment(){
 		
 	}
 	
-	public OpinionsFragment (String courseName, ArrayList<Entity> result){
+	public OpinionsFragment (String courseName){
 		this.courseName = courseName;
-		this.result = result;
 	}
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		/*
-		if(savedInstanceState != null)
-			book = savedInstanceState.getParcelable(BOOK_ENTITY);
-		*/
-        view = inflater.inflate(R.layout.opinions_fragment, container, false);
+		if(view == null)
+			view = inflater.inflate(R.layout.opinions_fragment, container, false);
         initializeUI(view);
         return view;
     }
@@ -53,8 +47,10 @@ public class OpinionsFragment extends Fragment implements ViewInitiator {
 
 	@Override
 	public void initializeUI(View view) {
-		opinionsAdapter = new OpinionsAdapter(activity, new ArrayList<Entity>());
-		opinionsAdapter.addAll(result);
+		opinionsAdapter = activity.getOpinionsAdapter();
+		if(this.courseName == null)
+			this.courseName = activity.getCourseName();
+		Log.i(TAG, "l'adapter dell'activity ha dimensione " + activity.getOpinionsAdapter().getCount());
 		listview = (ListView) view.findViewById(R.id.opinionsListView);
     	if(opinionsAdapter.getCount() > 0)
     		listview.setAdapter(opinionsAdapter);
