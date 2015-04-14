@@ -46,7 +46,7 @@ public class MainFragment extends Fragment implements ViewInitiator {
     @Override
 	public void initializeUI(View view) {
     	//Build view
-        Button btn = (Button) view.findViewById(R.id.button1);
+        Button btn = (Button) view.findViewById(R.id.insertOpinionButton);
         btn.setOnClickListener(new OnClickListener() {
 	        @Override
 	        public void onClick(View view) {

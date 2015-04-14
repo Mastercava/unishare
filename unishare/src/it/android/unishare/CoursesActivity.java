@@ -2,6 +2,8 @@ package it.android.unishare;
 
 import it.android.unishare.SearchFragment.OnCourseSelectedListener;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import android.app.FragmentTransaction;
@@ -20,6 +22,7 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 	 * (es. cambio orientamento dispositivo)
 	 */
 	private static final String COURSES_SEARCH_FRAGMENT_INSTANCE = "courses_search_fragment_key";
+	private static final String INSERT_OPINION_FRAGMENT_INSTANCE = "insert_opinion_fragment_key";
 	private static final String COURSE_NAME = "course_name_key";
 	private static final String ADAPTER_VALUES = "key_adapter";
 	private static final String OPINION_ADAPTER_VALUES = "key_opinion_adapter";
@@ -29,10 +32,12 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 	 */
 	private static final String COURSE_SEARCH_TAG = "courseSearch";
 	private static final String OPINION_TAG = "opinionSearch";
+	private static final String INSERT_OPINION_TAG = "insertOpinion";
 	
 	private MyApplication application;
 	private SearchFragment searchFragment;
 	private OpinionsFragment opinionsFragment;
+	private InsertOpinionFragment insertOpinionFragment;
 	private CoursesAdapter coursesAdapter;
 	private OpinionsAdapter opinionsAdapter;
 	
@@ -66,7 +71,8 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
         		opinionsAdapter = new OpinionsAdapter(this, new ArrayList<Entity>());
         		opinionsAdapter.addAll(opinionAdapterValues);
         	}
-        	
+        	if(getFragmentManager().getFragment(savedInstanceState, INSERT_OPINION_FRAGMENT_INSTANCE) != null)
+        		insertOpinionFragment = (InsertOpinionFragment)getFragmentManager().getFragment(savedInstanceState, INSERT_OPINION_FRAGMENT_INSTANCE);
         }
         else{
         	searchFragment = new SearchFragment();
@@ -108,8 +114,11 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
         			opinions.add(opinionsAdapter.getItem(i));
         		outState.putParcelableArrayList(OPINION_ADAPTER_VALUES, opinions);
         	}
-        		
+        			
         }
+        if(this.insertOpinionFragment != null)
+        	if(this.insertOpinionFragment.isVisible())
+        		getFragmentManager().putFragment(outState, INSERT_OPINION_FRAGMENT_INSTANCE, insertOpinionFragment);
     }
 
 	@Override
@@ -149,6 +158,16 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 			opinionsAdapter.addAll(result);
 			createOpinionFragment();
 		}
+		if(tag == INSERT_OPINION_TAG){
+			if(!result.isEmpty()){
+				Log.i(TAG,"Opinione inserita correttamente");
+				getFragmentManager().beginTransaction().remove(insertOpinionFragment).commit();
+				getFragmentManager().popBackStack();
+				String title = "";
+				String message = "Opinione inserita. Grazie per il tuo contributo!";
+				application.alertMessage(title, message);
+			}
+		}
 		
 	}
 	
@@ -181,6 +200,20 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 		return this.courseName;
 	}
 	
+	public void createInsertOpinionFragment() {
+		insertOpinionFragment = new InsertOpinionFragment();
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		transaction.replace(R.id.courses_fragment_container, insertOpinionFragment, InsertOpinionFragment.TAG);
+		transaction.addToBackStack(null);
+		transaction.commit();	
+	}
+	
+	public void insertOpinion(String opinion, float rating, ProgressDialog dialog){
+		Log.i(TAG, "Calling db for inserting opinion");
+		Log.i(TAG, "Commento: " + opinion + "\nvoto: " + rating +" per il corso " + courseId);
+		insertOpinion(courseId, rating, opinion, 1, dialog);
+	}
+	
 	/////////////////////////////////
 	// 	   Calls to database       //
 	/////////////////////////////////
@@ -191,6 +224,15 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 	
 	private void getOpinion(int courseId, ProgressDialog dialog){
 		application.databaseCall("opinions.php?id=" + courseId, OPINION_TAG, dialog);
+	}
+
+	private void insertOpinion(int courseId, float rating, String text, int cdsId, ProgressDialog dialog){
+		try {
+			application.databaseCall("opinions_insert.php?id=" + courseId + "&v=" + rating + "&c=" + URLEncoder.encode(text, "UTF-8") + "&u=" + cdsId, INSERT_OPINION_TAG, dialog);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

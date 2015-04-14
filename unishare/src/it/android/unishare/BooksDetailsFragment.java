@@ -53,7 +53,7 @@ public class BooksDetailsFragment extends Fragment implements ViewInitiator {
 		TextView text2 = (TextView) view.findViewById(R.id.textView2);
 		TextView text3 = (TextView) view.findViewById(R.id.textView3);
 		TextView text4 = (TextView) view.findViewById(R.id.textView4);
-		Button button = (Button) view.findViewById(R.id.button1);
+		Button button = (Button) view.findViewById(R.id.insertOpinionButton);
 		
 		text1.setText("Titolo: " + book.get("titolo"));
 		text2.setText("Autore: " + book.get("autore"));

@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -51,6 +53,14 @@ public class OpinionsFragment extends Fragment implements ViewInitiator {
 		if(this.courseName == null)
 			this.courseName = activity.getCourseName();
 		Log.i(TAG, "l'adapter dell'activity ha dimensione " + activity.getOpinionsAdapter().getCount());
+		Button btn = (Button) view.findViewById(R.id.insertOpinionButton);
+		btn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				activity.createInsertOpinionFragment();
+			}
+		});
 		listview = (ListView) view.findViewById(R.id.opinionsListView);
     	if(opinionsAdapter.getCount() > 0)
     		listview.setAdapter(opinionsAdapter);

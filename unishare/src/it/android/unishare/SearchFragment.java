@@ -129,8 +129,8 @@ public class SearchFragment extends Fragment implements ViewInitiator {
 				});
     		}
     	}    		
-    	searchForm = (EditText) view.findViewById(R.id.editText1);
-    	Button btn = (Button) view.findViewById(R.id.button1);
+    	searchForm = (EditText) view.findViewById(R.id.opinionText);
+    	Button btn = (Button) view.findViewById(R.id.insertOpinionButton);
         btn.setOnClickListener(new OnClickListener() {
 	        @Override
 	        public void onClick(View view) {
