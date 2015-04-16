@@ -1,10 +1,11 @@
 package it.android.unishare;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class SplashActivity extends SmartActivity {
+public class SplashActivity extends Activity {
 	
 	private MyApplication application;
 	static final int TIME_SHOW_MILLIS = 3000;
