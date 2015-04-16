@@ -1,5 +1,7 @@
 package it.android.unishare;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import it.android.unishare.SearchFragment.OnBookSelectedListener;
@@ -150,7 +152,11 @@ public class BooksActivity extends AdapterActivity implements OnBookSelectedList
 	/////////////////////////////////////////////////
 	
 	private void searchBooks(int campusId, String text, ProgressDialog dialog) {
-		application.databaseCall("books_search.php?q=" + text + "&s=" + campusId, BOOKS_SEARCH_TAG, dialog);
+		try {
+			application.databaseCall("books_search.php?q=" + URLEncoder.encode(text, "UTF-8") + "&s=" + campusId, BOOKS_SEARCH_TAG, dialog);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void getBook(int bookId, ProgressDialog dialog) {

@@ -33,6 +33,7 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 	private static final String COURSE_SEARCH_TAG = "courseSearch";
 	private static final String OPINION_TAG = "opinionSearch";
 	private static final String INSERT_OPINION_TAG = "insertOpinion";
+	private static final String REFRESH_OPINIONS_ADAPTER = "refreshOpinionsAdapter";
 	
 	private MyApplication application;
 	private SearchFragment searchFragment;
@@ -166,9 +167,20 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 				String title = "";
 				String message = "Opinione inserita. Grazie per il tuo contributo!";
 				application.alertMessage(title, message);
+				ProgressDialog dialog = new ProgressDialog(this);
+				String dialogTitle = "Searching";
+				String dialogMessage = "Please wait...";
+				dialog.setTitle(dialogTitle);
+				dialog.setMessage(dialogMessage);
+				refreshOpinions(courseId, dialog);
 			}
 		}
-		
+		if(tag == REFRESH_OPINIONS_ADAPTER){
+			Log.i(TAG, "Refreshing dell'adapter");
+			opinionsAdapter.clear();
+			opinionsAdapter.addAll(result);
+			opinionsAdapter.notifyDataSetChanged();
+		}
 	}
 	
 	private void createOpinionFragment(){
@@ -211,7 +223,7 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 	public void insertOpinion(String opinion, float rating, ProgressDialog dialog){
 		Log.i(TAG, "Calling db for inserting opinion");
 		Log.i(TAG, "Commento: " + opinion + "\nvoto: " + rating +" per il corso " + courseId);
-		insertOpinion(courseId, rating, opinion, 1, dialog);
+		insertOpinion(courseId, rating, opinion, 2418, dialog);
 	}
 	
 	/////////////////////////////////
@@ -219,18 +231,25 @@ public class CoursesActivity extends AdapterActivity implements OnCourseSelected
 	/////////////////////////////////
 	
 	private void searchCourses(int campusId, String text, ProgressDialog dialog) {
-		application.databaseCall("courses_search.php?q=" + text + "&s=" + campusId, COURSE_SEARCH_TAG, dialog);	
+		try {
+			application.databaseCall("courses_search.php?q=" + URLEncoder.encode(text, "UTF-8") + "&s=" + campusId, COURSE_SEARCH_TAG, dialog);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}	
 	}
 	
 	private void getOpinion(int courseId, ProgressDialog dialog){
 		application.databaseCall("opinions.php?id=" + courseId, OPINION_TAG, dialog);
+	}
+	
+	private void refreshOpinions(int courseId, ProgressDialog dialog){
+		application.databaseCall("opinions.php?id=" + courseId, REFRESH_OPINIONS_ADAPTER, dialog);
 	}
 
 	private void insertOpinion(int courseId, float rating, String text, int cdsId, ProgressDialog dialog){
 		try {
 			application.databaseCall("opinions_insert.php?id=" + courseId + "&v=" + rating + "&c=" + URLEncoder.encode(text, "UTF-8") + "&u=" + cdsId, INSERT_OPINION_TAG, dialog);
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
